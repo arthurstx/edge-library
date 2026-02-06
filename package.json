@@ -6,6 +6,8 @@
 		"deploy": "wrangler deploy",
 		"dev": "wrangler dev",
 		"start": "wrangler dev",
+		"cf-typegen": "wrangler types",
+		"d1:sql": "wrangler d1 execute d1-edge-library --local --command",
 		"test": "vitest"
 	},
 	"devDependencies": {

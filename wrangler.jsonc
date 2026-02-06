@@ -8,8 +8,15 @@
 	"main": "src/index.js",
 	"compatibility_date": "2025-09-27",
 	"observability": {
-		"enabled": true
-	}
+		"enabled": true,
+	},
+	"d1_databases": [
+		{
+			"binding": "d1_edge_library",
+			"database_name": "d1-edge-library",
+			"database_id": "6f401f82-2dbe-4749-bb73-687bc61db10b",
+		},
+	],
 	/**
 	 * Smart Placement
 	 * https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement

@@ -1,10 +1,10 @@
 // errors.js
 import { ZodError } from 'zod'
-import { json } from '../helpers/json.js'
+import { jsonResponse } from '../helpers/json.js'
 
 export function handleError(err, env) {
 	if (err instanceof ZodError) {
-		return json(
+		return jsonResponse(
 			{
 				message: 'Validation Error',
 				issues: err.issues,
@@ -17,5 +17,5 @@ export function handleError(err, env) {
 		console.error(err)
 	}
 
-	return json({ message: 'Internal Server Error' }, 500)
+	return jsonResponse({ message: 'Internal Server Error' }, 500)
 }
