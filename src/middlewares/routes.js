@@ -1,10 +1,11 @@
-// router.js
-
 export function createRouter() {
 	const routes = []
 
-	function add(method, path, handler) {
-		routes.push({ method, path, handler })
+	function add(method, path, ...handlers) {
+		if (handlers.length === 0) {
+			throw new Error('Rota precisa ter pelo menos um handler')
+		}
+		routes.push({ method, path, handlers })
 	}
 
 	function route(prefix, router) {
@@ -12,14 +13,13 @@ export function createRouter() {
 			routes.push({
 				method: r.method,
 				path: prefix + r.path,
-				handler: r.handler,
+				handlers: r.handlers,
 			})
 		})
 	}
 
 	async function handle(request, env, ctx) {
 		const url = new URL(request.url)
-
 		const route = routes.find((r) => r.method === request.method && r.path === url.pathname)
 
 		if (!route) {
@@ -29,12 +29,19 @@ export function createRouter() {
 			})
 		}
 
-		return route.handler(request, env, ctx)
+		// Executa middlewares + handler final
+		for (const fn of route.handlers) {
+			const res = await fn(request, env, ctx)
+			if (res instanceof Response) {
+				// Se algum middleware retornar Response, interrompe
+				return res
+			}
+		}
 	}
 
 	return {
-		get: (path, handler) => add('GET', path, handler),
-		post: (path, handler) => add('POST', path, handler),
+		get: (path, ...handlers) => add('GET', path, ...handlers),
+		post: (path, ...handlers) => add('POST', path, ...handlers),
 		route,
 		handle,
 		_routes: routes,

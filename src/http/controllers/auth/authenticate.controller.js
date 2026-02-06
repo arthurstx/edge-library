@@ -2,7 +2,6 @@ import * as cookie from 'cookie'
 import { SignJWT } from 'jose'
 import z from 'zod'
 import { jsonResponse } from 'src/helpers/json'
-import { UserAlreadyExistsError } from 'src/errors/user-already-exists-error'
 import { makeAuthenticateUseCase } from 'src/services/factories/make-authenticate-use-case'
 import { InvalidCredentialsError } from 'src/errors/invalid-credentials-error'
 

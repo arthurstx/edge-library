@@ -7,7 +7,7 @@ export function handleError(err, env) {
 		return jsonResponse(
 			{
 				message: 'Validation Error',
-				issues: err.issues,
+				issues: err.message,
 			},
 			400,
 		)

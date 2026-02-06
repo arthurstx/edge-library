@@ -19,8 +19,9 @@ export class D1UsersRepository {
 	async create(name, email, password_hash) {
 		const id = crypto.randomUUID()
 		const created_at = new Date().toISOString()
-		const query = 'INSERT INTO users (id, name,email, password_hash, created_at) VALUES (?, ?, ?, ?, ?)'
-		await this.db.prepare(query).bind(id, name, email, password_hash, created_at).run()
-		return { id, name, email, password_hash, created_at }
+		const role = 'admin'
+		const query = 'INSERT INTO users (id, name,email, password_hash, created_at, role) VALUES (?, ?, ?, ?, ?, ?)'
+		await this.db.prepare(query).bind(id, name, email, password_hash, created_at, role).run()
+		return { id, name, email, password_hash, created_at, role }
 	}
 }
