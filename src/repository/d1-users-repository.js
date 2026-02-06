@@ -1,17 +1,15 @@
-/*
-CREATE TABLE users (
-    id TEXT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
-    role TEXT NOT NULL CHECK (role IN ('admin', 'user')) DEFAULT 'user',
-    password_hash VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-*/
+/**
+ * @typedef {import('../types/schema.d.ts').User} User
+ */
 export class D1UsersRepository {
 	constructor(db) {
 		this.db = db
 	}
+	/**
+	 *
+	 * @param {string} email
+	 * @returns {Promise<User|null>}
+	 */
 	async findByEmail(email) {
 		const query = 'SELECT * FROM users WHERE email = ? LIMIT 1'
 		const result = await this.db.prepare(query).bind(email).first()
