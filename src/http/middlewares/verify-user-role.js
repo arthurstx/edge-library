@@ -1,3 +1,4 @@
+import { jsonResponse } from 'src/helpers/json'
 /**
  * @typedef {Object} user
  * @property {string} id
@@ -8,8 +9,6 @@
  * @typedef {Object} Context
  * @property {user} user
  */
-
-import { jsonResponse } from 'src/helpers/json'
 
 /**
  * @param {*} env

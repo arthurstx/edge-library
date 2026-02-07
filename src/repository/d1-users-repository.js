@@ -6,7 +6,6 @@ export class D1UsersRepository {
 		this.db = db
 	}
 	/**
-	 *
 	 * @param {string} email
 	 * @returns {Promise<User|null>}
 	 */
@@ -15,7 +14,23 @@ export class D1UsersRepository {
 		const result = await this.db.prepare(query).bind(email).first()
 		return result ? result : null
 	}
-
+	/**
+	 *
+	 * @param {string} id
+	 * @returns {Promise<User|null>}
+	 */
+	async findById(id) {
+		const query = 'SELECT * FROM users WHERE id = ? LIMIT 1'
+		const result = await this.db.prepare(query).bind(id).first()
+		return result ? result : null
+	}
+	/**
+	 *
+	 * @param {string} name
+	 * @param {string} email
+	 * @param {string} password_hash
+	 * @returns {Promise<User>}
+	 */
 	async create(name, email, password_hash) {
 		const id = crypto.randomUUID()
 		const created_at = new Date().toISOString()

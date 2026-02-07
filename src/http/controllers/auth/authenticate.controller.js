@@ -5,15 +5,16 @@ import { jsonResponse } from 'src/helpers/json'
 import { makeAuthenticateUseCase } from 'src/services/factories/make-authenticate-use-case'
 import { InvalidCredentialsError } from 'src/errors/invalid-credentials-error'
 
-const authenticateBodySchema = z.object({
-	email: z.email(),
-	password: z.string().min(6),
-})
 /**
  * @param {import('../../../../env').Env} env
  */
 export async function authenticate(request, env) {
 	const body = await request.json()
+
+	const authenticateBodySchema = z.object({
+		email: z.email(),
+		password: z.string().min(6),
+	})
 
 	const secreteKey = new TextEncoder().encode(env.JWT_SECRET)
 
