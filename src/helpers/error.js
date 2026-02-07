@@ -1,6 +1,6 @@
 // errors.js
 import { ZodError } from 'zod'
-import { jsonResponse } from '../helpers/json.js'
+import { jsonResponse } from './json.js'
 
 export function handleError(err, env) {
 	if (err instanceof ZodError) {

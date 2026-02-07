@@ -1,5 +1,5 @@
-import { createRouter } from './middlewares/routes'
-import { handleError } from './middlewares/error.js'
+import { createRouter } from './helpers/routes'
+import { handleError } from './helpers/error.js'
 import { jsonResponse } from './helpers/json.js'
 import { authRoute } from './http/controllers/auth/routes'
 const app = createRouter()
@@ -8,8 +8,6 @@ const app = createRouter()
 
 app.get('/health', () => jsonResponse({ status: 'ok' }))
 app.route('/auth', authRoute)
-
-/* ---------------- export ---------------- */
 
 export default {
 	fetch: (request, env, ctx) => {
