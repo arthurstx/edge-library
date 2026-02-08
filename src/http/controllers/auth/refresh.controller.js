@@ -3,48 +3,87 @@ import { jwtVerify, SignJWT } from 'jose'
 import { jsonResponse } from 'src/helpers/json'
 
 /**
+ * @param {Request} request
  * @param {import('../../../../env').Env} env
  */
 export async function refresh(request, env) {
-	const secreteKey = new TextEncoder().encode(env.JWT_SECRET)
-	const cookies = cookie.parse(request.headers.get('Cookie') || '')
+	const cookieHeader = request.headers.get('cookie')
+	const cookies = cookie.parse(cookieHeader || '')
+	const oldRefreshToken = cookies.refresh_token
 
-	const jwt = await jwtVerify(cookies.refresh_token, secreteKey)
+	if (!oldRefreshToken) {
+		return jsonResponse({ message: 'Unauthorized: Missing refresh token' }, 401)
+	}
 
-	const userId = jwt.payload.sub
-	const userRole = jwt.payload.role
+	const secretKey = new TextEncoder().encode(env.JWT_SECRET)
 
-	const token = await new SignJWT({ role: userRole })
-		.setProtectedHeader({ alg: 'HS256', typ: 'JWT' })
-		.setSubject(userId)
-		.setIssuedAt()
-		.setExpirationTime('15m')
-		.sign(secreteKey)
+	try {
+		const { payload } = await jwtVerify(oldRefreshToken, secretKey)
 
-	const refresh_token = await new SignJWT({ role: userRole })
-		.setProtectedHeader({ alg: 'HS256', typ: 'JWT' })
-		.setSubject(userId)
-		.setIssuedAt()
-		.setExpirationTime('7d')
-		.sign(secreteKey)
+		if (!payload.jti || !payload.sub) {
+			return jsonResponse({ message: 'Invalid token payload' }, 401)
+		}
 
-	const refreshTokenHeader = cookie.stringifySetCookie({
-		name: 'refresh_token',
-		value: refresh_token,
-		httpOnly: true,
-		path: '/',
-		maxAge: 7 * 24 * 60 * 60,
-		sameSite: 'strict',
-		secure: false,
-	})
+		const [isRevoked, sessionData] = await Promise.all([
+			env.kv_edge_library.get(`jwt:blacklist:${payload.jti}`),
+			env.kv_edge_library.get(`session:${payload.sub}`),
+		])
 
-	return new Response(JSON.stringify({ token }), {
-		status: 200,
-		headers: {
-			'Content-Type': 'application/json',
-			'Set-Cookie': refreshTokenHeader,
-		},
-	})
-	// eslint-disable-next-line no-unreachable
-	return jsonResponse({ token }, 200)
+		if (isRevoked) {
+			return jsonResponse({ message: 'Token revoked' }, 401)
+		}
+
+		if (!sessionData) {
+			return jsonResponse({ message: 'Session expired or invalid' }, 401)
+		}
+
+		const now = Math.floor(Date.now() / 1000)
+		const ttl = payload.exp - now
+
+		if (ttl > 0) {
+			await env.kv_edge_library.put(`jwt:blacklist:${payload.jti}`, 'true', {
+				expirationTtl: Math.max(ttl, 60),
+			})
+		}
+
+		const userId = payload.sub
+		const userRole = payload.role
+
+		const [accessToken, newRefreshToken] = await Promise.all([
+			new SignJWT({ role: userRole })
+				.setProtectedHeader({ alg: 'HS256', typ: 'JWT' })
+				.setSubject(userId)
+				.setJti(crypto.randomUUID())
+				.setIssuedAt()
+				.setExpirationTime('15m')
+				.sign(secretKey),
+
+			new SignJWT({ role: userRole })
+				.setProtectedHeader({ alg: 'HS256', typ: 'JWT' })
+				.setSubject(userId)
+				.setJti(crypto.randomUUID())
+				.setIssuedAt()
+				.setExpirationTime('7d')
+				.sign(secretKey),
+		])
+
+		const refreshTokenCookie = cookie.serialize('refresh_token', newRefreshToken, {
+			httpOnly: true,
+			path: '/',
+			maxAge: 7 * 24 * 60 * 60,
+			sameSite: 'strict',
+			secure: env.NODE_ENV === 'production',
+		})
+
+		return new Response(JSON.stringify({ token: accessToken }), {
+			status: 200,
+			headers: {
+				'Content-Type': 'application/json',
+				'Set-Cookie': refreshTokenCookie,
+			},
+		})
+	} catch (error) {
+		const message = error.code === 'ERR_JWT_EXPIRED' ? 'Refresh token expired' : 'Unauthorized'
+		return jsonResponse({ message }, 401)
+	}
 }

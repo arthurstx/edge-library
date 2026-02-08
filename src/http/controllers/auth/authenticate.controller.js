@@ -7,6 +7,7 @@ import { InvalidCredentialsError } from 'src/errors/invalid-credentials-error'
 
 /**
  * @param {import('../../../../env').Env} env
+ * @param {Request} request
  */
 export async function authenticate(request, env) {
 	const body = await request.json()
@@ -37,6 +38,7 @@ export async function authenticate(request, env) {
 		const token = await new SignJWT({ role: user.role })
 			.setProtectedHeader({ alg: 'HS256', typ: 'JWT' })
 			.setSubject(user.id)
+			.setJti(crypto.randomUUID())
 			.setIssuedAt()
 			.setExpirationTime('15m')
 			.sign(secreteKey)
@@ -45,6 +47,7 @@ export async function authenticate(request, env) {
 			.setProtectedHeader({ alg: 'HS256', typ: 'JWT' })
 			.setSubject(user.id)
 			.setIssuedAt()
+			.setJti(crypto.randomUUID())
 			.setExpirationTime('7d')
 			.sign(secreteKey)
 
@@ -55,7 +58,7 @@ export async function authenticate(request, env) {
 			path: '/',
 			maxAge: 7 * 24 * 60 * 60,
 			sameSite: 'strict',
-			secure: false,
+			secure: env.NODE_ENV === 'production', // Set to true in production
 		})
 
 		return new Response(JSON.stringify({ token }), {

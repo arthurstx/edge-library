@@ -29,11 +29,9 @@ export function createRouter() {
 			})
 		}
 
-		// Executa middlewares + handler final
 		for (const fn of route.handlers) {
 			const res = await fn(request, env, ctx)
 			if (res instanceof Response) {
-				// Se algum middleware retornar Response, interrompe
 				return res
 			}
 		}

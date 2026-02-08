@@ -2,6 +2,10 @@
  * @typedef {import('../types/schema.d.ts').User} User
  */
 export class D1UsersRepository {
+	/**
+	 *
+	 * @param {D1Database} db
+	 */
 	constructor(db) {
 		this.db = db
 	}
@@ -15,7 +19,6 @@ export class D1UsersRepository {
 		return result ? result : null
 	}
 	/**
-	 *
 	 * @param {string} id
 	 * @returns {Promise<User|null>}
 	 */
