@@ -67,12 +67,14 @@ export async function refresh(request, env) {
 				.sign(secretKey),
 		])
 
-		const refreshTokenCookie = cookie.serialize('refresh_token', newRefreshToken, {
+		const refreshTokenCookie = cookie.stringifySetCookie({
+			name: 'refresh_token',
+			value: newRefreshToken,
 			httpOnly: true,
 			path: '/',
 			maxAge: 7 * 24 * 60 * 60,
 			sameSite: 'strict',
-			secure: env.NODE_ENV === 'production',
+			secure: env.NODE_ENV === 'production', // Set to true in production
 		})
 
 		return new Response(JSON.stringify({ token: accessToken }), {

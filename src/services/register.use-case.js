@@ -22,7 +22,6 @@ export class RegisterUseCase {
 	async execute(name, email, password) {
 		const password_hash = await hashPassword(password)
 		const userWithSameEmail = await this.usersRepository.findByEmail(email)
-		console.log('passou')
 		if (userWithSameEmail) {
 			throw new UserAlreadyExistsError()
 		}
