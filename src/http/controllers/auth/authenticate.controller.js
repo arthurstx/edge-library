@@ -24,6 +24,16 @@ export async function authenticate(request, env) {
 		const useCase = makeAuthenticateUseCase(env.d1_edge_library)
 		const { user } = await useCase.execute(email, password)
 
+		const value = {
+			userId: user.id,
+			expirationTtl: 7 * 24 * 60 * 60, // 7 days
+			createdAt: Date.now(),
+		}
+
+		await env.kv_edge_library.put(`session:${user.id}`, JSON.stringify(value), {
+			expirationTtl: 7 * 24 * 60 * 60, // 7 days
+		})
+
 		const token = await new SignJWT({ role: user.role })
 			.setProtectedHeader({ alg: 'HS256', typ: 'JWT' })
 			.setSubject(user.id)

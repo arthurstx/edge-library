@@ -1,7 +1,7 @@
 import { jwtVerify } from 'jose'
 import { jsonResponse } from 'src/helpers/json'
 
-export async function verifyJWT(request, env, ctx) {
+export async function requireAuth(request, env, ctx) {
 	const authHeader = request.headers.get('Authorization')
 
 	if (!authHeader) {
@@ -21,6 +21,12 @@ export async function verifyJWT(request, env, ctx) {
 		const userId = payload.sub
 
 		if (!userId) {
+			return jsonResponse({ message: 'Unauthorized' }, 401)
+		}
+
+		const session = await env.kv_edge_library.get(`session:${userId}`)
+
+		if (!session) {
 			return jsonResponse({ message: 'Unauthorized' }, 401)
 		}
 
