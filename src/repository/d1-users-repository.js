@@ -29,12 +29,10 @@ export class D1UsersRepository {
 	}
 	/**
 	 *
-	 * @param {string} name
-	 * @param {string} email
-	 * @param {string} password_hash
+	 * @param {{ name: string, email: string, password_hash: string }} params
 	 * @returns {Promise<User>}
 	 */
-	async create(name, email, password_hash) {
+	async create({ name, email, password_hash }) {
 		const id = crypto.randomUUID()
 		const created_at = new Date().toISOString()
 		const role = 'admin'

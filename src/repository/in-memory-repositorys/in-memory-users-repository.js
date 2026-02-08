@@ -12,10 +12,13 @@ export class InMemoryUsersRepository {
 		/**@type {User[]} */
 		this.users = []
 	}
-
-	async create(name, email, password_hash) {
+	/**
+	 *
+	 * @param {{ id?: string, name: string, email: string, password_hash: string }} params
+	 */
+	async create({ id, name, email, password_hash }) {
 		const user = {
-			id: crypto.randomUUID(),
+			id: id ?? crypto.randomUUID(),
 			name,
 			email,
 			created_at: new Date(),

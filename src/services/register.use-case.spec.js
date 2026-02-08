@@ -21,21 +21,19 @@ describe('Register Use Case', () => {
 	})
 
 	it('should be able to register a new user', async () => {
-		const { user } = await sut.execute('John Doe', 'jhonDoe@example.com', 'password123')
+		const { user } = await sut.execute({ name: 'John Doe', email: 'jhonDoe@example.com', password: 'password123' })
 		expect(user.id).toEqual(expect.any(String))
 	})
 
 	it('Should hash user password upon registration', async () => {
-		const { user } = await sut.execute('John Doe', 'jhonDoe@example.com', '123456')
-
-		console.log(await verifyPassword('123456', user.password_hash))
+		const { user } = await sut.execute({ name: 'John Doe', email: 'jhonDoe@example.com', password: '123456' })
 
 		const isPasswordCorrectlyHashed = await verifyPassword('123456', user.password_hash)
 		expect(isPasswordCorrectlyHashed).toBe(true)
 	})
 	it('Should not be able to registration with same email twice', async () => {
 		const email = 'jhonDoe@example.com'
-		await sut.execute('John Doe', email, '123456')
-		expect(sut.execute('marco', email, '123456')).rejects.instanceOf(UserAlreadyExistsError)
+		await sut.execute({ name: 'John Doe', email, password: '123456' })
+		await expect(sut.execute({ name: 'marco', email, password: '123456' })).rejects.toBeInstanceOf(UserAlreadyExistsError)
 	})
 })

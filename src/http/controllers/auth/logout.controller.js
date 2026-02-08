@@ -44,7 +44,7 @@ export async function logout(request, env, ctx) {
 				)
 			}
 		} catch {
-			console.log('Refresh token invalid during logout, skipping blacklist.')
+			console.error('Refresh token invalid during logout, skipping blacklist.')
 		}
 	}
 

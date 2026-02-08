@@ -1,4 +1,4 @@
-import { ResourceNotFoundError } from 'src/errors/resource-not-found-error.js'
+import { ResourceNotFoundError } from 'src/errors/resource-not-found-error'
 
 /**
  * @typedef {import('../repository/d1-users-repository.js').D1UsersRepository} UsersRepository

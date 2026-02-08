@@ -18,7 +18,7 @@ export async function register(request, env) {
 
 	try {
 		const useCase = makeRegisterUseCase(env.d1_edge_library)
-		await useCase.execute(name, email, password)
+		await useCase.execute({ name, email, password })
 		return jsonResponse({ message: 'User registered successfully' }, 201)
 	} catch (error) {
 		if (error instanceof UserAlreadyExistsError) {

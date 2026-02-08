@@ -23,7 +23,7 @@ export async function authenticate(request, env) {
 
 	try {
 		const useCase = makeAuthenticateUseCase(env.d1_edge_library)
-		const { user } = await useCase.execute(email, password)
+		const { user } = await useCase.execute({ email, password })
 
 		const value = {
 			userId: user.id,

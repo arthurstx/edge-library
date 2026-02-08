@@ -13,20 +13,26 @@ export class RegisterUseCase {
 	constructor(usersRepository) {
 		this.usersRepository = usersRepository
 	}
+
 	/**
-	 *@param {string} name
-	 * @param {string} email
-	 * @param {string} password
+	 * @param {{ name: string, email: string, password: string }} params
 	 * @returns {Promise<{ user: User }>}
 	 */
-	async execute(name, email, password) {
+	async execute({ name, email, password }) {
 		const password_hash = await hashPassword(password)
+
 		const userWithSameEmail = await this.usersRepository.findByEmail(email)
+
 		if (userWithSameEmail) {
 			throw new UserAlreadyExistsError()
 		}
 
-		const user = await this.usersRepository.create(name, email, password_hash)
+		const user = await this.usersRepository.create({
+			name,
+			email,
+			password_hash,
+		})
+
 		return { user }
 	}
 }
