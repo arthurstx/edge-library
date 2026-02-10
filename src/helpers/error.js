@@ -1,4 +1,3 @@
-// errors.js
 import { ZodError } from 'zod'
 import { jsonResponse } from './json.js'
 

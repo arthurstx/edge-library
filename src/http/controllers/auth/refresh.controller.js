@@ -8,6 +8,8 @@ import { jsonResponse } from 'src/helpers/json'
  */
 export async function refresh(request, env) {
 	const cookieHeader = request.headers.get('cookie')
+	console.log('=========CONTROLLER=========')
+	console.log(cookieHeader)
 	const cookies = cookie.parse(cookieHeader || '')
 	const oldRefreshToken = cookies.refresh_token
 
