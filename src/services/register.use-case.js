@@ -15,10 +15,10 @@ export class RegisterUseCase {
 	}
 
 	/**
-	 * @param {{ name: string, email: string, password: string }} params
+	 * @param {{ name: string, email: string, password: string, role?: string }} params
 	 * @returns {Promise<{ user: User }>}
 	 */
-	async execute({ name, email, password }) {
+	async execute({ name, email, password, role }) {
 		const password_hash = await hashPassword(password)
 
 		const userWithSameEmail = await this.usersRepository.findByEmail(email)
@@ -31,8 +31,8 @@ export class RegisterUseCase {
 			name,
 			email,
 			password_hash,
+			role: role ?? 'user',
 		})
-
 		return { user }
 	}
 }

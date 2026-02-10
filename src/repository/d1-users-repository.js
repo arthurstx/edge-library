@@ -29,13 +29,12 @@ export class D1UsersRepository {
 	}
 	/**
 	 *
-	 * @param {{ name: string, email: string, password_hash: string }} params
+	 * @param {{ name: string, email: string, password_hash: string, role?: string }} params
 	 * @returns {Promise<User>}
 	 */
-	async create({ name, email, password_hash }) {
+	async create({ name, email, password_hash, role }) {
 		const id = crypto.randomUUID()
 		const created_at = new Date().toISOString()
-		const role = 'user'
 		const query = 'INSERT INTO users (id, name,email, password_hash, created_at, role) VALUES (?, ?, ?, ?, ?, ?)'
 		await this.db.prepare(query).bind(id, name, email, password_hash, created_at, role).run()
 		return { id, name, email, password_hash, created_at, role }

@@ -15,7 +15,7 @@ export class AuthenticateUseCase {
 	}
 
 	/**
-	 * @param {{ email: string, password: string }} params
+	 * @param {{ email: string, password: string  }} params
 	 * @returns {Promise<{ user: User }>}
 	 */
 	async execute({ email, password }) {

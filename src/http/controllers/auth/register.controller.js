@@ -12,13 +12,14 @@ export async function register(request, env) {
 		name: z.string().min(3),
 		email: z.email(),
 		password: z.string().min(6),
+		role: z.enum(['user', 'admin']).optional(),
 	})
 
-	const { name, email, password } = registerBodySchema.parse(body)
+	const { name, email, password, role } = registerBodySchema.parse(body)
 
 	try {
 		const useCase = makeRegisterUseCase(env.d1_edge_library)
-		await useCase.execute({ name, email, password })
+		await useCase.execute({ name, email, password, role })
 		return jsonResponse({ message: 'User registered successfully' }, 201)
 	} catch (error) {
 		if (error instanceof UserAlreadyExistsError) {
