@@ -10,14 +10,14 @@ import { UserAlreadyExistsError } from 'src/errors/user-already-exists-error'
  */
 
 /**@type {InMemoryUsersRepository} */
-let inMemoryUsersRepository
+let usersRepository
 /** @type {RegisterUseCase} */
 let sut
 
 describe('Register Use Case', () => {
 	beforeEach(() => {
-		inMemoryUsersRepository = new InMemoryUsersRepository()
-		sut = new RegisterUseCase(inMemoryUsersRepository)
+		usersRepository = new InMemoryUsersRepository()
+		sut = new RegisterUseCase(usersRepository)
 	})
 
 	it('should be able to register a new user', async () => {

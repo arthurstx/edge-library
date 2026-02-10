@@ -23,7 +23,7 @@ export async function profile(request, env, ctx) {
 
 	try {
 		const useCase = makeProfileUseCase(env.d1_edge_library)
-		const user = await useCase.execute(id)
+		const { user } = await useCase.execute(id)
 		return jsonResponse({ user }, 200)
 	} catch (error) {
 		if (error instanceof ResourceNotFoundError) {

@@ -11,19 +11,19 @@ import { ResourceNotFoundError } from 'src/errors/resource-not-found-error'
  */
 
 /**@type {InMemoryUsersRepository} */
-let inMemoryUsersRepository
+let usersRepository
 /** @type {ProfileUseCase} */
 let sut
 
 describe('Profile Use Case', () => {
 	beforeEach(() => {
-		inMemoryUsersRepository = new InMemoryUsersRepository()
-		sut = new ProfileUseCase(inMemoryUsersRepository)
+		usersRepository = new InMemoryUsersRepository()
+		sut = new ProfileUseCase(usersRepository)
 	})
 
 	it('should be able get profile', async () => {
 		const userId = 'user-id'
-		await inMemoryUsersRepository.create({
+		await usersRepository.create({
 			id: userId,
 			name: 'John Doe',
 			email: 'jhonDoe@example.com',
@@ -36,7 +36,7 @@ describe('Profile Use Case', () => {
 
 	it('Should not be able get profile with wrong id', async () => {
 		const userId = 'user-id'
-		await inMemoryUsersRepository.create({
+		await usersRepository.create({
 			id: userId,
 			name: 'John Doe',
 			email: 'jhonDoe@example.com',

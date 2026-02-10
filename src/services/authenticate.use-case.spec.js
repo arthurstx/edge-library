@@ -11,21 +11,21 @@ import { InvalidCredentialsError } from 'src/errors/invalid-credentials-error'
  */
 
 /**@type {InMemoryUsersRepository} */
-let inMemoryUsersRepository
+let usersRepository
 /** @type {AuthenticateUseCase} */
 let sut
 
 describe('Authenticate Use Case', () => {
 	beforeEach(() => {
-		inMemoryUsersRepository = new InMemoryUsersRepository()
-		sut = new AuthenticateUseCase(inMemoryUsersRepository)
+		usersRepository = new InMemoryUsersRepository()
+		sut = new AuthenticateUseCase(usersRepository)
 	})
 
 	it('should be able to authenticate', async () => {
 		const email = 'jhonDoe@example.com'
 		const password = 'password123'
 
-		await inMemoryUsersRepository.create({
+		await usersRepository.create({
 			id: crypto.randomUUID(),
 			name: 'John Doe',
 			email,
@@ -41,7 +41,7 @@ describe('Authenticate Use Case', () => {
 	it('Should no be able authenticate with wrong email', async () => {
 		const password = 'password123'
 
-		await inMemoryUsersRepository.create({
+		await usersRepository.create({
 			name: 'John Doe',
 			email: 'jhonDoe@example.com',
 			password_hash: await hashPassword(password),
@@ -57,7 +57,7 @@ describe('Authenticate Use Case', () => {
 })
 it('Should no be able authenticate with wrong password', async () => {
 	const email = 'jhonDoe@example.com'
-	await inMemoryUsersRepository.create({
+	await usersRepository.create({
 		name: 'John Doe',
 		email,
 		password_hash: await hashPassword('password123'),
