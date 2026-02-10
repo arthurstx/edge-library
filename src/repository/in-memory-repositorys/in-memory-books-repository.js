@@ -22,6 +22,7 @@ export class InMemoryBooksRepository {
 			title,
 			author,
 			category,
+			total_copies: 1,
 			created_at: new Date(),
 		}
 		this.books.push(book)
@@ -36,5 +37,11 @@ export class InMemoryBooksRepository {
 	async findById(id) {
 		const book = this.books.find((book) => book.id === id)
 		return book ? book : null
+	}
+	async addStock({ bookId, quantity }) {
+		const book = await this.findById(bookId)
+		if (book) {
+			book.total_copies = book.total_copies + quantity
+		}
 	}
 }

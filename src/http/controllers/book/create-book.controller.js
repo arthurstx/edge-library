@@ -19,8 +19,8 @@ export async function create(request, env) {
 	try {
 		const useCase = makeCreateBookUseCase(env.d1_edge_library)
 
-		await useCase.execute({ title, author, category })
-		return jsonResponse({ message: 'Book created successfully' }, 201)
+		const { book } = await useCase.execute({ title, author, category })
+		return jsonResponse({ message: 'Book created successfully', book }, 201)
 	} catch (error) {
 		if (error instanceof BookAlreadyExistsError) {
 			return jsonResponse({ message: error.message }, 400)

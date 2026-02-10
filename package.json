@@ -8,7 +8,7 @@
 		"start": "wrangler dev",
 		"cf-typegen": "wrangler types",
 		"d1:sql": "wrangler d1 execute d1-edge-library --local --command",
-		"test": "vitest src/services",
+		"test": "vitest run src/services",
 		"test:integration": "vitest run src/http/controllers",
 		"test:e2e": "vitest run src/http/test",
 		"test:coverage": "vitest --coverage"

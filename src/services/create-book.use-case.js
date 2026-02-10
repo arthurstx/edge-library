@@ -29,7 +29,8 @@ export class CreateBookUseCase {
 			throw new BookAlreadyExistsError()
 		}
 
-		const book = await this.booksRepository.create(data)
+		const { book } = await this.booksRepository.create(data)
+
 		return { book }
 	}
 }

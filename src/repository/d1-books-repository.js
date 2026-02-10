@@ -30,4 +30,13 @@ export class D1BooksRepository {
 		const result = await this.database.prepare('SELECT * FROM books WHERE title = ? AND author = ?').bind(title, author).first()
 		return result ? result : null
 	}
+
+	async findById(id) {
+		const result = await this.database.prepare('SELECT * FROM books WHERE id = ?').bind(id).first()
+		return result ? result : null
+	}
+
+	async addStock({ bookId, quantity }) {
+		await this.database.prepare('UPDATE books SET total_copies = total_copies + ? WHERE id = ?').bind(quantity, bookId).run()
+	}
 }

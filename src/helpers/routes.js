@@ -5,41 +5,65 @@ export function createRouter() {
 		if (handlers.length === 0) {
 			throw new Error('Rota precisa ter pelo menos um handler')
 		}
-		routes.push({ method, path, handlers })
+
+		const paramNames = []
+		const regexPath = path.replace(/:([^/]+)/g, (_, paramName) => {
+			paramNames.push(paramName)
+			return '([^/]+)'
+		})
+
+		const regex = new RegExp(`^${regexPath}$`)
+
+		routes.push({
+			method,
+			path,
+			regex,
+			paramNames,
+			handlers,
+		})
 	}
 
 	function route(prefix, router) {
 		router._routes.forEach((r) => {
-			routes.push({
-				method: r.method,
-				path: prefix + r.path,
-				handlers: r.handlers,
-			})
+			add(r.method, prefix + r.path, ...r.handlers)
 		})
 	}
 
 	async function handle(request, env, ctx) {
 		const url = new URL(request.url)
-		const route = routes.find((r) => r.method === request.method && r.path === url.pathname)
 
-		if (!route) {
-			return new Response(JSON.stringify({ message: 'Not Found' }), {
-				status: 404,
-				headers: { 'Content-Type': 'application/json' },
+		for (const route of routes) {
+			if (route.method !== request.method) continue
+
+			const match = url.pathname.match(route.regex)
+			if (!match) continue
+
+			// cria request.params
+			request.params = {}
+
+			route.paramNames.forEach((name, index) => {
+				request.params[name] = match[index + 1]
 			})
-		}
 
-		for (const fn of route.handlers) {
-			const res = await fn(request, env, ctx)
-			if (res instanceof Response) {
-				return res
+			for (const fn of route.handlers) {
+				const res = await fn(request, env, ctx)
+				if (res instanceof Response) {
+					return res
+				}
 			}
 		}
+
+		return new Response(JSON.stringify({ message: 'Not Found' }), {
+			status: 404,
+			headers: { 'Content-Type': 'application/json' },
+		})
 	}
 
 	return {
 		get: (path, ...handlers) => add('GET', path, ...handlers),
 		post: (path, ...handlers) => add('POST', path, ...handlers),
+		patch: (path, ...handlers) => add('PATCH', path, ...handlers),
+		delete: (path, ...handlers) => add('DELETE', path, ...handlers),
 		route,
 		handle,
 		_routes: routes,
