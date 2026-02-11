@@ -1,3 +1,7 @@
+/**
+ * @typedef {import('../types/schema.d.ts').Book} Book
+ */
+
 export class D1BooksRepository {
 	/**
 	 * @param {D1Database} database
@@ -38,5 +42,26 @@ export class D1BooksRepository {
 
 	async addStock({ bookId, quantity }) {
 		await this.database.prepare('UPDATE books SET total_copies = total_copies + ? WHERE id = ?').bind(quantity, bookId).run()
+	}
+	/**
+	 * @param {*} book
+	 * @returns {D1Result}
+	 */
+
+	/**
+	 * @param {{ bookId: string, data: Book }} params
+	 * @returns
+	 */
+	async update({ bookId, data }) {
+		const { title = null, author = null, category = null } = data
+
+		console.log(title, author, category)
+		const query = `
+		UPDATE books 
+		SET title = COALESCE(?, title), author = COALESCE(?, author), category = COALESCE(?, category) 
+		WHERE id = ?`
+		const result = await this.database.prepare(query).bind(title, author, category, bookId).run()
+
+		return result
 	}
 }

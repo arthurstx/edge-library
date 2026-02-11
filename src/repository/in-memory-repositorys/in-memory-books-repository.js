@@ -25,8 +25,9 @@ export class InMemoryBooksRepository {
 			total_copies: 1,
 			created_at: new Date(),
 		}
+
 		this.books.push(book)
-		return book
+		return { book }
 	}
 
 	async findBook(title, author) {
@@ -43,5 +44,20 @@ export class InMemoryBooksRepository {
 		if (book) {
 			book.total_copies = book.total_copies + quantity
 		}
+	}
+
+	async update({ bookId, data }) {
+		const index = await this.books.findIndex((b) => b.id === bookId)
+
+		if (index === -1) {
+			return { meta: { changed_db: false } }
+		}
+
+		this.books[index] = {
+			...this.books[index],
+			...data,
+		}
+
+		return { meta: { changed_db: true } }
 	}
 }

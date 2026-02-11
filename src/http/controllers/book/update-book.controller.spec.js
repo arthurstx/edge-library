@@ -2,7 +2,7 @@ import { test, expect } from 'vitest'
 import { SELF } from 'cloudflare:test'
 import { registerAndAuthenticateUser } from 'src/http/test/helpers/register-and-authenticate-user'
 
-test('add book stock integration', async () => {
+test('update book integration', async () => {
 	const token = await registerAndAuthenticateUser('admin')
 
 	const createBookResponse = await SELF.fetch('http://worker/book/create', {
@@ -20,16 +20,18 @@ test('add book stock integration', async () => {
 	const { book } = await createBookResponse.json()
 	const bookId = book.id
 
-	const response = await SELF.fetch(`http://worker/book/add-stock/${bookId}`, {
-		method: 'POST',
+	const response = await SELF.fetch(`http://worker/book/update/${bookId}`, {
+		method: 'PATCH',
 		headers: {
 			'Content-Type': 'application/json',
 			Authorization: `Bearer ${token}`,
 		},
 		body: JSON.stringify({
-			quantity: 10,
+			data: {
+				title: 'Updated Book Title',
+			},
 		}),
 	})
 
-	expect(response.status).toBe(201)
+	expect(response.status).toBe(200)
 })

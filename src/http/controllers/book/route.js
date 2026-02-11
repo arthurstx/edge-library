@@ -3,10 +3,12 @@ import { create } from './create-book.controller'
 import { requireAuth } from 'src/http/middlewares/require-auth'
 import { verifyUserRole } from 'src/http/middlewares/verify-user-role'
 import { addStock } from './add-stock.controller'
+import { update } from './update-book.controller'
 
 const bookRoute = createRouter()
 
 bookRoute.post('/create', requireAuth, verifyUserRole, create)
-bookRoute.patch('/add-stock/:id', requireAuth, verifyUserRole, addStock)
+bookRoute.post('/add-stock/:id', requireAuth, verifyUserRole, addStock)
+bookRoute.patch('/update/:id', requireAuth, verifyUserRole, update)
 
 export { bookRoute }
