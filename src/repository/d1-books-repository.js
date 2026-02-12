@@ -84,4 +84,16 @@ export class D1BooksRepository {
 
 		return await this.database.prepare(query).bind(title, author, category, bookId).run()
 	}
+
+	async search({ query, page }) {
+		const sqlQuery = `
+			SELECT * FROM books
+			WHERE title LIKE '%' || ? || '%' OR author LIKE '%' || ? || '%'
+			LIMIT 10 OFFSET ?
+		`
+		return await this.database
+			.prepare(sqlQuery)
+			.bind(query, query, (page - 1) * 10)
+			.all()
+	}
 }

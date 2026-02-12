@@ -60,4 +60,16 @@ export class InMemoryBooksRepository {
 
 		return { meta: { changed_db: true } }
 	}
+
+	async search({ query = '', page = 1 }) {
+		const normalizedQuery = query.toLowerCase()
+
+		const filteredBooks = this.books.filter((book) => {
+			return book.title.toLowerCase().includes(normalizedQuery) || book.author.toLowerCase().includes(normalizedQuery)
+		})
+
+		const books = filteredBooks.slice((page - 1) * 10, page * 10)
+
+		return { books }
+	}
 }

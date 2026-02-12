@@ -1,7 +1,7 @@
 import z from 'zod'
 import { jsonResponse } from 'src/helpers/json'
 import { BookNotFoundError } from 'src/errors/book-not-foud-error'
-import { makeFindBookUseCase } from 'src/services/factories/make-find-book.use-case'
+import { makeFindBookUseCase } from 'src/services/factories/make-find-book-use-case'
 
 /**
  * @param {import('../../../../env').Env} env
