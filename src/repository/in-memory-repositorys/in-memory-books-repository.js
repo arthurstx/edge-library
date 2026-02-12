@@ -68,8 +68,22 @@ export class InMemoryBooksRepository {
 			return book.title.toLowerCase().includes(normalizedQuery) || book.author.toLowerCase().includes(normalizedQuery)
 		})
 
-		const books = filteredBooks.slice((page - 1) * 10, page * 10)
+		const results = filteredBooks.slice((page - 1) * 10, page * 10)
 
-		return { books }
+		const data = {
+			results,
+		}
+
+		return data
+	}
+
+	async list({ page = 1 }) {
+		const results = this.books.slice((page - 1) * 10, page * 10)
+
+		const data = {
+			results,
+		}
+
+		return data
 	}
 }

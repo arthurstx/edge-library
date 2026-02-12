@@ -1,24 +1,17 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { InMemoryBooksRepository } from '../repository/in-memory-repositorys/in-memory-books-repository.js'
-import { SearchBookUseCase } from './search-book.use-case.js'
+import { ListBooksUseCase } from './list-books.use-case.js'
 
-/**
- * @typedef {import('./search-book.use-case.js').SearchBookUseCase} SearchBookUseCase
- * @typedef {import('../repository/in-memory-repositorys/in-memory-books-repository.js').InMemoryBooksRepository} InMemoryBooksRepository
- */
-
-/** @type {InMemoryBooksRepository} */
 let booksRepository
-/** @type {SearchBookUseCase} */
 let sut
 
-describe('Search Book Use Case', () => {
+describe('List Books Use Case', () => {
 	beforeEach(() => {
 		booksRepository = new InMemoryBooksRepository()
-		sut = new SearchBookUseCase(booksRepository)
+		sut = new ListBooksUseCase(booksRepository)
 	})
 
-	it('should be able to search for books by query', async () => {
+	it('should be able to list books by page', async () => {
 		await booksRepository.create({
 			id: 'book-id',
 			title: 'Book Title',
@@ -34,7 +27,6 @@ describe('Search Book Use Case', () => {
 		})
 
 		const result = await sut.execute({
-			query: 'Book Title',
 			page: 1,
 		})
 
@@ -46,7 +38,6 @@ describe('Search Book Use Case', () => {
 
 	it('should return an empty array if no books match the search query', async () => {
 		const result = await sut.execute({
-			query: 'Non-existent Book',
 			page: 1,
 		})
 
@@ -64,7 +55,6 @@ describe('Search Book Use Case', () => {
 		}
 
 		const result = await sut.execute({
-			query: 'JavaScript',
 			page: 2,
 		})
 
