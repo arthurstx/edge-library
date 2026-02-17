@@ -18,13 +18,13 @@ export async function list(request, env) {
 	const { page } = querySchema.parse({ page: getPage })
 
 	try {
-		const useCase = makeListBooksUseCase(env.d1_edge_library)
+		const useCase = makeListBooksUseCase(env.d1_edge_library, env.kv_edge_library)
 
 		const { books } = await useCase.execute({ page })
 		return jsonResponse({ books }, 200)
 	} catch (error) {
 		if (error instanceof BookNotFoundError) {
-			return jsonResponse({ message: error.message }, 400)
+			return jsonResponse({ message: error.message }, 404)
 		}
 		throw error
 	}

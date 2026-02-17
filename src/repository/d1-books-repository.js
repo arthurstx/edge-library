@@ -66,6 +66,12 @@ export class D1BooksRepository {
 		return await this.database.prepare('UPDATE books SET total_copies = total_copies + ? WHERE id = ?').bind(quantity, bookId).run()
 	}
 
+	decreasePreparedStatement({ bookId, quantity }) {
+		return this.database
+			.prepare('UPDATE books SET total_copies = total_copies - ? WHERE id = ? AND total_copies >= ?')
+			.bind(quantity, bookId, quantity)
+	}
+
 	/**
 	 * @param {{ bookId: string, data: Partial<Book> }} params
 	 * @returns {Promise<D1Result>}
@@ -98,7 +104,7 @@ export class D1BooksRepository {
 			.all()
 	}
 
-	async list({ page }) {
+	async findAll({ page }) {
 		const sqlQuery = `
 			SELECT * FROM books
 			ORDER BY title DESC

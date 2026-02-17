@@ -70,7 +70,7 @@ export async function authenticate(request, env) {
 		})
 	} catch (error) {
 		if (error instanceof InvalidCredentialsError) {
-			return jsonResponse({ message: error.message }, 400)
+			return jsonResponse({ message: error.message }, 401)
 		}
 		throw error
 	}

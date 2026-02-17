@@ -27,7 +27,7 @@ export async function profile(request, env, ctx) {
 		return jsonResponse({ user }, 200)
 	} catch (error) {
 		if (error instanceof ResourceNotFoundError) {
-			return jsonResponse({ message: error.message }, 400)
+			return jsonResponse({ message: error.message }, 404)
 		}
 		throw error
 	}

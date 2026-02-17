@@ -1,6 +1,7 @@
 import { test, expect } from 'vitest'
 import { SELF } from 'cloudflare:test'
 import { registerAndAuthenticateUser } from 'src/http/test/helpers/register-and-authenticate-user'
+import { env } from 'cloudflare:workers'
 
 test('list book integration', async () => {
 	const token = await registerAndAuthenticateUser('admin')
@@ -27,10 +28,19 @@ test('list book integration', async () => {
 			'Content-Type': 'application/json',
 		},
 	})
-
 	const { books } = await response.json()
 
+	const { results } = await JSON.parse(await env.kv_edge_library.get('books:list:page:1'))
+
 	expect(books).toEqual(
+		expect.arrayContaining([
+			expect.objectContaining({
+				id: bookId,
+				title: 'clean code',
+			}),
+		]),
+	)
+	expect(results).toEqual(
 		expect.arrayContaining([
 			expect.objectContaining({
 				id: bookId,

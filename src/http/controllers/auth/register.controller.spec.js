@@ -12,5 +12,8 @@ test('register user integration', async () => {
 		}),
 	})
 
+	const { userJson } = await response.json()
+
+	expect(userJson.id).toEqual(expect.any(String))
 	expect(response.status).toBe(201)
 })

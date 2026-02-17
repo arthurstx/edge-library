@@ -28,7 +28,7 @@ export async function addStock(request, env) {
 		return jsonResponse({ message: 'Stock added successfully' }, 201)
 	} catch (error) {
 		if (error instanceof BookNotFoundError) {
-			return jsonResponse({ message: error.message }, 400)
+			return jsonResponse({ message: error.message }, 404)
 		}
 		throw error
 	}

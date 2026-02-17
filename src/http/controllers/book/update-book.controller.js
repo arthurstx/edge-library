@@ -35,7 +35,7 @@ export async function update(request, env) {
 		return jsonResponse({ message: 'Book updated successfully' }, 200)
 	} catch (error) {
 		if (error instanceof BookNotFoundError) {
-			return jsonResponse({ message: error.message }, 400)
+			return jsonResponse({ message: error.message }, 404)
 		}
 		throw error
 	}

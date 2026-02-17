@@ -77,7 +77,7 @@ export class InMemoryBooksRepository {
 		return data
 	}
 
-	async list({ page = 1 }) {
+	async findAll({ page = 1 }) {
 		const results = this.books.slice((page - 1) * 10, page * 10)
 
 		const data = {

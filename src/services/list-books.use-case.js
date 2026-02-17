@@ -1,5 +1,5 @@
 /**
- * @typedef {import('../repository/d1-books-repository.js').D1BooksRepository} BooksRepository
+ * @typedef {import('../repository/cache/cache-books-repository.js').CacheBooksRepository} BooksRepository
  * @typedef {import('../types/schema.js').Book} Book
  *
  */
@@ -15,7 +15,7 @@ export class ListBooksUseCase {
 	 * @param {{ page : number}} params
 	 */
 	async execute({ page }) {
-		const data = await this.booksRepository.list({ page })
+		const data = await this.booksRepository.findAll({ page })
 
 		return { books: data.results }
 	}

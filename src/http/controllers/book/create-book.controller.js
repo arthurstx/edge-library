@@ -23,7 +23,7 @@ export async function create(request, env) {
 		return jsonResponse({ message: 'Book created successfully', book }, 201)
 	} catch (error) {
 		if (error instanceof BookAlreadyExistsError) {
-			return jsonResponse({ message: error.message }, 400)
+			return jsonResponse({ message: error.message }, 409)
 		}
 		throw error
 	}

@@ -20,7 +20,7 @@ export async function findBook(request, env) {
 		return jsonResponse({ book }, 200)
 	} catch (error) {
 		if (error instanceof BookNotFoundError) {
-			return jsonResponse({ message: error.message }, 400)
+			return jsonResponse({ message: error.message }, 404)
 		}
 		throw error
 	}
