@@ -3,13 +3,13 @@ import { SELF } from 'cloudflare:test'
 import { createRental } from 'src/http/test/helpers/create-rental'
 
 test('list active user rentals : Integration', async () => {
-	const { rental, token, user } = await createRental()
+	const { rental, userToken, user } = await createRental()
 
-	const response = await SELF.fetch('http://worker/rental/list-active', {
+	const response = await SELF.fetch('http://worker/rental/active', {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
-			Authorization: `Bearer ${token}`,
+			Authorization: `Bearer ${userToken}`,
 		},
 	})
 

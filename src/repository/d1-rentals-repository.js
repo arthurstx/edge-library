@@ -28,4 +28,9 @@ export class D1RentalsRepository {
 
 		return rentals.results
 	}
+
+	async updateStatus({ userId, id }) {
+		const query = 'UPDATE rentals SET status = "returned" WHERE user_id = ? AND id = ?'
+		return await this.database.prepare(query).bind(userId, id).run()
+	}
 }

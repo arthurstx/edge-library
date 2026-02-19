@@ -8,7 +8,7 @@ import { registerAndAuthenticateUser } from './register-and-authenticate-user'
 
 /**
  *
- * @returns {Promise<{ rental: Rental, token: string, user: User }>}
+ * @returns {Promise<{ rental: Rental, userToken: string, adminToken: string, user: User }>}
  */
 export async function createRental() {
 	const token = await registerAndAuthenticateUser('admin')
@@ -49,7 +49,7 @@ export async function createRental() {
 	const { userJson: user } = await createUserResponse.json()
 	const { book } = await createBookResponse.json()
 
-	const response = await SELF.fetch('http://worker/rental/create', {
+	const response = await SELF.fetch('http://worker/rental', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
@@ -62,5 +62,5 @@ export async function createRental() {
 	})
 
 	const { rental } = await response.json()
-	return { rental, user, token: userToken }
+	return { rental, user, userToken, adminToken: token }
 }

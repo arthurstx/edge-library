@@ -32,6 +32,22 @@ export class InMemoryRentalsRepository {
 	}
 
 	async fetchManyByUserId({ userId }) {
+		return this.rentals.filter((rental) => rental.userId === userId)
+	}
+
+	async fetchManyActiveByUserId({ userId }) {
 		return this.rentals.filter((rental) => rental.userId === userId && rental.status === 'rented')
+	}
+
+	async updateStatus({ userId, id }) {
+		const rentalIndex = this.rentals.findIndex((rental) => rental.userId === userId && rental.id === id)
+
+		if (rentalIndex === -1) {
+			return { meta: { changed_db: false } }
+		}
+
+		this.rentals[rentalIndex].status = 'returned'
+
+		return { meta: { changed_db: true } }
 	}
 }

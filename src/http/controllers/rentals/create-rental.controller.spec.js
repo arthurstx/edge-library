@@ -31,7 +31,7 @@ test('register user integration', async () => {
 	const { userJson: user } = await createUserResponse.json()
 	const { book } = await createBookResponse.json()
 
-	const response = await SELF.fetch('http://worker/rental/create', {
+	const response = await SELF.fetch('http://worker/rental', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
