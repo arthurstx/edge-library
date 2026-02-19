@@ -21,7 +21,7 @@ export async function create(request, env) {
 	try {
 		const useCase = makeCreateRentalsUseCase(env.d1_edge_library)
 
-		const rental = await useCase.execute({ bookId, userId })
+		const { rental } = await useCase.execute({ bookId, userId })
 		return jsonResponse({ message: 'Rental created successfully', rental }, 201)
 	} catch (error) {
 		if (error instanceof UserNotFoundError) {

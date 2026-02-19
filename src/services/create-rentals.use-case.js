@@ -26,8 +26,7 @@ export class CreateRentalUseCase {
 	 * @param {{ bookId: string, userId: string }} params
 	 */
 	async execute({ bookId, userId }) {
-		console.log('======== USE CASE =========')
-
+		// TODO: add array of bookIds
 		const [user, book] = await Promise.all([this.userRepository.findById(userId), this.booksRepository.findById(bookId)])
 
 		if (!user) throw new UserNotFoundError()
@@ -55,8 +54,6 @@ export class CreateRentalUseCase {
 		]
 
 		const results = await this.d1.batch(statements)
-		console.log('========= use case ==========')
-		console.log(rental)
 
 		if (!results[0].meta.changed_db) {
 			throw new OutOfStockError()

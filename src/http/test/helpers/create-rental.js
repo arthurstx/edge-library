@@ -1,8 +1,16 @@
-import { test, expect } from 'vitest'
 import { SELF } from 'cloudflare:test'
-import { registerAndAuthenticateUser } from 'src/http/test/helpers/register-and-authenticate-user'
+import { registerAndAuthenticateUser } from './register-and-authenticate-user'
 
-test('register user integration', async () => {
+/**
+ * @typedef {import('../../../types/schema').Rental} Rental
+ * @typedef {import('../../../types/schema').User} User
+ */
+
+/**
+ *
+ * @returns {Promise<{ rental: Rental, token: string, user: User }>}
+ */
+export async function createRental() {
 	const token = await registerAndAuthenticateUser('admin')
 
 	const createBookResponse = await SELF.fetch('http://worker/book/create', {
@@ -28,6 +36,16 @@ test('register user integration', async () => {
 		}),
 	})
 
+	const authenticateResponse = await SELF.fetch('http://worker/auth/login', {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify({
+			email: 'newUser@example.com',
+			password: 'password123',
+		}),
+	})
+	const { token: userToken } = await authenticateResponse.json()
+
 	const { userJson: user } = await createUserResponse.json()
 	const { book } = await createBookResponse.json()
 
@@ -44,13 +62,5 @@ test('register user integration', async () => {
 	})
 
 	const { rental } = await response.json()
-	expect(rental).toEqual(
-		expect.objectContaining({
-			id: expect.any(String),
-			bookId: book.id,
-			userId: user.id,
-		}),
-	)
-
-	expect(response.status).toBe(201)
-})
+	return { rental, user, token: userToken }
+}
