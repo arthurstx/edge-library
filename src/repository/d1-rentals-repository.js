@@ -14,9 +14,17 @@ export class D1RentalsRepository {
 		return { rental, D1PreparedStatement }*/
 	}
 
-	async fetchManyByUserId({ userId }) {
+	async fetchManyActiveByUserId({ userId }) {
 		const query = 'SELECT * FROM rentals WHERE user_id = ? AND status = "rented"'
 		const rentals = await this.database.prepare(query).bind(userId).all()
+
+		return rentals.results
+	}
+
+	async fetchManyByUserId({ userId, page = 1 }) {
+		const query = 'SELECT * FROM rentals WHERE user_id = ? ORDER BY start_date DESC LIMIT 10 OFFSET ?'
+		const offset = (page - 1) * 10
+		const rentals = await this.database.prepare(query).bind(userId, offset).all()
 
 		return rentals.results
 	}

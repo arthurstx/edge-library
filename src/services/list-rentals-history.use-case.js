@@ -4,7 +4,7 @@
  *
  */
 
-export class ListActiveUserRentalsUseCase {
+export class ListRentalsHistoryUseCase {
 	/**
 	 * @param {RentalsRepository} rentalsRepository
 	 */
@@ -12,10 +12,11 @@ export class ListActiveUserRentalsUseCase {
 		this.rentalsRepository = rentalsRepository
 	}
 	/**
-	 * @param {{ userId: string }} params
+	 * @param {{ userId: string, page?: number }} params
+	 * @returns {Promise<{ rental: Rental[] }>}
 	 */
-	async execute({ userId }) {
-		const rental = await this.rentalsRepository.fetchManyActiveByUserId({ userId })
+	async execute({ userId, page }) {
+		const rental = await this.rentalsRepository.fetchManyByUserId({ userId, page })
 		return {
 			rental,
 		}
