@@ -14,7 +14,7 @@
 		{
 			"binding": "d1_edge_library",
 			"database_name": "d1-edge-library",
-			"database_id": "6f401f82-2dbe-4749-bb73-687bc61db10b",
+			"database_id": "6f401f82-2dbe-4749-bb73-687bc61db10b" /* prod: b9456b7e-714d-4485-b015-4cea12d8b5f9 */,
 		},
 	],
 

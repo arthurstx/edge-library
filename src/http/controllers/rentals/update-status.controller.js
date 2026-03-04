@@ -32,7 +32,6 @@ export async function updateStatus(request, env) {
 
 	const { userId } = updateStatusBodySchema.parse(body)
 	const { id } = updateStatusQuerySchema.parse(request.params)
-
 	try {
 		const useCase = makeUpdateRentalStatusUseCase(env.d1_edge_library)
 

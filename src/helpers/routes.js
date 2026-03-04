@@ -1,3 +1,19 @@
+import { handleError } from './error.js'
+
+const corsHeaders = {
+	'Access-Control-Allow-Origin': '*',
+	'Access-Control-Allow-Methods': 'GET,HEAD,POST,PATCH,DELETE,OPTIONS',
+	'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+	'Access-Control-Max-Age': '86400',
+}
+
+function addCors(response) {
+	Object.entries(corsHeaders).forEach(([key, value]) => {
+		response.headers.set(key, value)
+	})
+	return response
+}
+
 export function createRouter() {
 	const routes = []
 
@@ -13,14 +29,7 @@ export function createRouter() {
 		})
 
 		const regex = new RegExp(`^${regexPath}$`)
-
-		routes.push({
-			method,
-			path,
-			regex,
-			paramNames,
-			handlers,
-		})
+		routes.push({ method, path, regex, paramNames, handlers })
 	}
 
 	function route(prefix, router) {
@@ -30,33 +39,39 @@ export function createRouter() {
 	}
 
 	async function handle(request, env, ctx) {
-		const url = new URL(request.url)
+		try {
+			const url = new URL(request.url)
 
-		for (const route of routes) {
-			if (route.method !== request.method) continue
+			if (request.method === 'OPTIONS') {
+				return new Response(null, { status: 204, headers: corsHeaders })
+			}
 
-			const match = url.pathname.match(route.regex)
-			if (!match) continue
+			for (const route of routes) {
+				if (route.method !== request.method) continue
 
-			// cria request.params
-			request.params = {}
+				const match = url.pathname.match(route.regex)
+				if (!match) continue
 
-			route.paramNames.forEach((name, index) => {
-				request.params[name] = match[index + 1]
-			})
+				request.params = {}
+				route.paramNames.forEach((name, index) => {
+					request.params[name] = match[index + 1]
+				})
 
-			for (const fn of route.handlers) {
-				const res = await fn(request, env, ctx)
-				if (res instanceof Response) {
-					return res
+				for (const fn of route.handlers) {
+					const res = await fn(request, env, ctx)
+					if (res instanceof Response) return addCors(res)
 				}
 			}
-		}
 
-		return new Response(JSON.stringify({ message: 'Not Found' }), {
-			status: 404,
-			headers: { 'Content-Type': 'application/json' },
-		})
+			return addCors(
+				new Response(JSON.stringify({ message: 'Not Found' }), {
+					status: 404,
+					headers: { 'Content-Type': 'application/json' },
+				}),
+			)
+		} catch (err) {
+			return addCors(handleError(err, env))
+		}
 	}
 
 	return {

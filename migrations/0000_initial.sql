@@ -17,6 +17,7 @@ CREATE TABLE books (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+
 CREATE TABLE rentals (
     id TEXT PRIMARY KEY,
     user_id TEXT NOT NULL,
@@ -27,7 +28,7 @@ CREATE TABLE rentals (
     FOREIGN KEY (user_id) REFERENCES users(id)
     FOREIGN KEY (book_id) REFERENCES books(id)
 );
-
+/*
 CREATE TABLE payments (
     id TEXT PRIMARY KEY,
     rental_id TEXT NOT NULL,
@@ -36,7 +37,9 @@ CREATE TABLE payments (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (rental_id) REFERENCES rentals(id)
 );
-
+*/
 CREATE INDEX idx_rentals_user_id ON rentals(user_id);
 CREATE INDEX idx_rentals_book_id ON rentals(book_id);
+/*
 CREATE INDEX idx_payments_rental_id ON payments(rental_id);
+*/
