@@ -30,7 +30,8 @@ export async function authenticate(request, env) {
 			expirationTtl: 7 * 24 * 60 * 60, // 7 days
 			createdAt: Date.now(),
 		}
-
+		console.log('env', env)
+		console.log('NODE_ENV', env.NODE_ENV)
 		await env.kv_edge_library.put(`session:${user.id}`, JSON.stringify(value), {
 			expirationTtl: 7 * 24 * 60 * 60, // 7 days
 		})
