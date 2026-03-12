@@ -57,7 +57,7 @@ export async function authenticate(request, env) {
 			httpOnly: true,
 			path: '/',
 			maxAge: 7 * 24 * 60 * 60,
-			sameSite: 'strict',
+			sameSite: env.NODE_ENV === 'production' ? 'none' : 'strict',
 			secure: env.NODE_ENV === 'production', // Set to true in production
 		})
 
