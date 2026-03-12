@@ -62,6 +62,8 @@ export async function authenticate(request, env) {
 			secure: env.NODE_ENV === 'production', // Set to true in production
 		})
 
+		console.log('cookie', refreshTokenHeader)
+
 		return new Response(JSON.stringify({ token }), {
 			status: 200,
 			headers: {
