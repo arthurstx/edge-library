@@ -9,8 +9,7 @@ import { makeListBooksUseCase } from 'src/services/factories/make-list-book-use-
 export async function list(request, env) {
 	const url = new URL(request.url)
 
-	const getPage = url.searchParams.get('page')
-
+	const getPage = url.searchParams.get('page') ?? undefined
 	const querySchema = z.object({
 		page: z.coerce.number().min(1).default(1),
 	})
