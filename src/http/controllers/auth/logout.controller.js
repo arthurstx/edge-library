@@ -54,7 +54,7 @@ export async function logout(request, env, ctx) {
 		httpOnly: true,
 		path: '/',
 		maxAge: 0,
-		sameSite: 'strict',
+		sameSite: env.NODE_ENV === 'production' ? 'none' : 'strict',
 		secure: env.NODE_ENV === 'production', // Set to true in production
 	})
 
