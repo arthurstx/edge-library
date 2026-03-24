@@ -15,14 +15,20 @@ export class D1RentalsRepository {
 	}
 
 	async fetchManyActiveByUserId({ userId }) {
-		const query = 'SELECT * FROM rentals WHERE user_id = ? AND status = "rented"'
+		const query = `SELECT r.id, b.title, b.author, b.category,r.status, r.start_date, r.end_date 
+		FROM rentals as r INNER JOIN books as b on r.book_id = b.id 
+		WHERE r.user_id = ? AND r.status = "rented"
+		LIMIT 10 OFFSET ?`
 		const rentals = await this.database.prepare(query).bind(userId).all()
 
 		return rentals.results
 	}
 
 	async fetchManyByUserId({ userId, page = 1 }) {
-		const query = 'SELECT * FROM rentals WHERE user_id = ? ORDER BY start_date DESC LIMIT 10 OFFSET ?'
+		const query = `SELECT r.id, b.title, b.author, b.category,r.status, r.start_date, r.end_date 
+		FROM rentals as r INNER JOIN books as b on r.book_id = b.id 
+		WHERE r.user_id = ? 
+		LIMIT 10 OFFSET ?`
 		const offset = (page - 1) * 10
 		const rentals = await this.database.prepare(query).bind(userId, offset).all()
 

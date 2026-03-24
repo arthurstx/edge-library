@@ -16,8 +16,23 @@ export class ListActiveUserRentalsUseCase {
 	 */
 	async execute({ userId }) {
 		const rental = await this.rentalsRepository.fetchManyActiveByUserId({ userId })
+
+		const rentals = rental.map((rental) => {
+			return {
+				id: rental.id,
+				book: {
+					title: rental.title,
+					author: rental.author,
+					category: rental.category,
+				},
+				status: rental.status,
+				startDate: rental.start_date,
+				endDate: rental.end_date,
+			}
+		})
+
 		return {
-			rental,
+			rentals,
 		}
 	}
 }
