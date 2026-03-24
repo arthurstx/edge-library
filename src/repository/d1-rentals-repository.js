@@ -17,8 +17,7 @@ export class D1RentalsRepository {
 	async fetchManyActiveByUserId({ userId }) {
 		const query = `SELECT r.id, b.title, b.author, b.category,r.status, r.start_date, r.end_date 
 		FROM rentals as r INNER JOIN books as b on r.book_id = b.id 
-		WHERE r.user_id = ? AND r.status = "rented"
-		LIMIT 10 OFFSET ?`
+		WHERE r.user_id = ? AND r.status = 'rented'`
 		const rentals = await this.database.prepare(query).bind(userId).all()
 
 		return rentals.results
@@ -36,7 +35,8 @@ export class D1RentalsRepository {
 	}
 
 	async updateStatus({ userId, id }) {
-		const query = 'UPDATE rentals SET status = "returned" WHERE user_id = ? AND id = ?'
+		const query = `UPDATE rentals SET status = 'returned' 
+		WHERE user_id = ? AND id = ?`
 		return await this.database.prepare(query).bind(userId, id).run()
 	}
 }
