@@ -31,8 +31,8 @@ export async function history(request, env, ctx) {
 
 		const useCase = makeListRentalsHistoryUseCase(env.d1_edge_library)
 
-		const { rental } = await useCase.execute({ userId, page })
-		return jsonResponse({ message: 'Rental list successfully', rental }, 200)
+		const { rentals } = await useCase.execute({ userId, page })
+		return jsonResponse({ message: 'Rental list successfully', rentals }, 200)
 	} catch (error) {
 		console.error(error)
 		throw error
