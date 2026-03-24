@@ -18,8 +18,19 @@ export class ListAllRentalsUseCase {
 	async execute({ query, page }) {
 		const rentals = await this.rentalsRepository.fetchAll({ query, page })
 
+		const formattedRentals = rentals.map((rental) => {
+			return {
+				...rental,
+				book: {
+					title: rental.bookTitle,
+					author: rental.author,
+					category: rental.category,
+				},
+			}
+		})
+
 		return {
-			rentals,
+			rentals: formattedRentals,
 		}
 	}
 }
