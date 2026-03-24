@@ -21,12 +21,15 @@ export class ListAllRentalsUseCase {
 		const formattedRentals = rentals.map((rental) => {
 			return {
 				id: rental.id,
-				userId: rental.userId,
-				bookId: rental.bookId,
+				user: {
+					userId: rental.userId,
+					name: rental.name,
+				},
 				status: rental.status,
-				startDate: rental.startDate,
-				endDate: rental.endDate,
+				startDate: rental.start_date,
+				endDate: rental.end_date,
 				book: {
+					bookId: rental.bookId,
 					title: rental.bookTitle,
 					author: rental.author,
 					category: rental.category,
