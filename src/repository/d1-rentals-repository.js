@@ -38,23 +38,46 @@ export class D1RentalsRepository {
 		const offset = (page - 1) * 10
 
 		if (query) {
-			const sqlQuery = `SELECT r.id, u.name, r.user_id, AS userId,  b.title, b.author, b.category, r.book_id AS bookId, r.status, r.start_date, r.end_date,
-				u.name AS userName, b.title AS bookTitle
-				FROM rentals AS r
-				INNER JOIN books AS b ON r.book_id = b.id
-				INNER JOIN users AS u ON r.user_id = u.id
-				WHERE (u.name LIKE '%' || ? || '%' OR b.title LIKE '%' || ? || '%') AND r.status = 'rented'	
-				LIMIT 10 OFFSET ?`
+			const sqlQuery = `
+			SELECT 
+				r.id,
+				r.user_id AS userId,
+				r.book_id AS bookId,
+				r.status,
+				r.start_date,
+				r.end_date,
+				u.name AS userName,
+				b.title AS bookTitle,
+				b.author,
+				b.category
+			FROM rentals AS r
+			INNER JOIN books AS b ON r.book_id = b.id
+			INNER JOIN users AS u ON r.user_id = u.id
+			WHERE (u.name LIKE '%' || ? || '%' OR b.title LIKE '%' || ? || '%')
+			AND r.status = 'rented'
+			LIMIT 10 OFFSET ?
+		`
 			const rentals = await this.database.prepare(sqlQuery).bind(query, query, offset).all()
 			return rentals.results
 		}
 
-		const sqlQuery = `SELECT r.id, r.user_id AS userId, b.title, b.author, b.category, r.book_id AS bookId, r.status, r.start_date, r.end_date,
-			u.name AS userName, b.title AS bookTitle
-			FROM rentals AS r
-			INNER JOIN books AS b ON r.book_id = b.id
-			INNER JOIN users AS u ON r.user_id = u.id
-			LIMIT 10 OFFSET ?`
+		const sqlQuery = `
+		SELECT 
+			r.id,
+			r.user_id AS userId,
+			r.book_id AS bookId,
+			r.status,
+			r.start_date,
+			r.end_date,
+			u.name AS userName,
+			b.title AS bookTitle,
+			b.author,
+			b.category
+		FROM rentals AS r
+		INNER JOIN books AS b ON r.book_id = b.id
+		INNER JOIN users AS u ON r.user_id = u.id
+		LIMIT 10 OFFSET ?
+	`
 		const rentals = await this.database.prepare(sqlQuery).bind(offset).all()
 		return rentals.results
 	}

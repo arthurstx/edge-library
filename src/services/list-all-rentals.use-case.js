@@ -25,15 +25,15 @@ export class ListAllRentalsUseCase {
 					userId: rental.userId,
 					name: rental.name,
 				},
-				status: rental.status,
-				startDate: rental.start_date,
-				endDate: rental.end_date,
 				book: {
 					bookId: rental.bookId,
 					title: rental.bookTitle,
 					author: rental.author,
 					category: rental.category,
 				},
+				status: rental.status,
+				startDate: rental.start_date,
+				endDate: rental.end_date,
 			}
 		})
 
