@@ -17,6 +17,8 @@ export class ListActiveUserRentalsUseCase {
 	async execute({ userId }) {
 		const rental = await this.rentalsRepository.fetchManyActiveByUserId({ userId })
 
+		console.log('Rental before', rental)
+
 		const rentals = rental.map((rental) => {
 			return {
 				id: rental.id,
@@ -30,6 +32,7 @@ export class ListActiveUserRentalsUseCase {
 				endDate: rental.end_date,
 			}
 		})
+		console.log('rental after', rentals)
 
 		return {
 			rentals,
