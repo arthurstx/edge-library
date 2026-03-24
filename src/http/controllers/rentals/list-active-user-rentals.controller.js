@@ -24,7 +24,7 @@ export async function list(request, env, ctx) {
 		const useCase = makeListActiveUserRentalsUseCase(env.d1_edge_library)
 
 		const { rentals } = await useCase.execute({ userId })
-		console.log('rental controller', rentals)
+
 		return jsonResponse({ message: 'Rental list successfully', rentals }, 200)
 	} catch (error) {
 		console.error(error)

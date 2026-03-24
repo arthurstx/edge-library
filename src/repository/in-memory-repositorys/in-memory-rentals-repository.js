@@ -1,6 +1,8 @@
 /**
  * @typedef {import('../d1-rentals-repository').D1RentalsRepository} D1RentalsRepository
  * @typedef {import('../../types/schema').Rental} Rental
+ * @typedef {import('./in-memory-books-repository').InMemoryBooksRepository} InMemoryBooksRepository
+ * @typedef {import('./in-memory-users-repository').InMemoryUsersRepository} InMemoryUsersRepository
  */
 
 /**
@@ -8,9 +10,15 @@
  */
 
 export class InMemoryRentalsRepository {
-	constructor() {
+	/**
+	 * @param {InMemoryBooksRepository} [booksRepository]
+	 * @param {InMemoryUsersRepository} [usersRepository]
+	 */
+	constructor(booksRepository, usersRepository) {
 		/** @type {Rental[]} */
 		this.rentals = []
+		this.booksRepository = booksRepository ?? null
+		this.usersRepository = usersRepository ?? null
 	}
 
 	/**
@@ -29,6 +37,31 @@ export class InMemoryRentalsRepository {
 		this.rentals.push(rental)
 
 		return { rental }
+	}
+
+	async fetchAll({ query, page = 1 }) {
+		let filtered = this.rentals
+
+		if (query) {
+			const normalizedQuery = query.toLowerCase()
+			filtered = []
+
+			for (const rental of this.rentals) {
+				const user = this.usersRepository ? await this.usersRepository.findById(rental.userId) : null
+				const book = this.booksRepository ? await this.booksRepository.findById(rental.bookId) : null
+
+				const matchesUserName = user?.name?.toLowerCase().includes(normalizedQuery)
+				const matchesBookTitle = book?.title?.toLowerCase().includes(normalizedQuery)
+
+				if (matchesUserName || matchesBookTitle) {
+					filtered.push(rental)
+				}
+			}
+		}
+
+		const results = filtered.slice((page - 1) * 10, page * 10)
+
+		return results
 	}
 
 	async fetchManyByUserId({ userId }) {

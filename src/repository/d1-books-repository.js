@@ -84,7 +84,7 @@ export class D1BooksRepository {
 			SET 
 				title = COALESCE(?, title), 
 				author = COALESCE(?, author), 
-				category = COALESCE(?, category) 
+				category = COALESCE(?, category)
 			WHERE id = ?
 		`
 

@@ -7,8 +7,6 @@ test('list history user rentals : Integration', async () => {
 
 	const id = rental.id
 
-	console.log(typeof adminToken)
-
 	const response = await SELF.fetch(`http://worker/rental/${id}/return`, {
 		method: 'PATCH',
 		headers: {
