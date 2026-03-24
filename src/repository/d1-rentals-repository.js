@@ -43,7 +43,7 @@ export class D1RentalsRepository {
 				FROM rentals AS r
 				INNER JOIN books AS b ON r.book_id = b.id
 				INNER JOIN users AS u ON r.user_id = u.id
-				WHERE u.name LIKE '%' || ? || '%' OR b.title LIKE '%' || ? || '%'
+				WHERE (u.name LIKE '%' || ? || '%' OR b.title LIKE '%' || ? || '%') AND r.status = 'rented'	
 				LIMIT 10 OFFSET ?`
 			const rentals = await this.database.prepare(sqlQuery).bind(query, query, offset).all()
 			return rentals.results
