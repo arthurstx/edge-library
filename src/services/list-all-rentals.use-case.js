@@ -23,7 +23,7 @@ export class ListAllRentalsUseCase {
 				id: rental.id,
 				user: {
 					userId: rental.userId,
-					name: rental.name,
+					name: rental.userName,
 				},
 				book: {
 					bookId: rental.bookId,
