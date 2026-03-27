@@ -59,4 +59,35 @@ export class D1UsersRepository {
 		const result = await this.db.prepare(query).first()
 		return result ? result.total : 0
 	}
+
+	/**
+	 * @param {{ query?: string, page?: number }} params
+	 * @returns {Promise<User[]>}
+	 */
+	async fetchAll({ query, page = 1 }) {
+		const offset = (page - 1) * 10
+
+		if (query) {
+			const sqlQuery = `
+				SELECT id, name, email, role, created_at 
+				FROM users 
+				WHERE role != 'admin' 
+				AND (name LIKE '%' || ? || '%' OR email LIKE '%' || ? || '%')
+				ORDER BY name ASC
+				LIMIT 10 OFFSET ?
+			`
+			const result = await this.db.prepare(sqlQuery).bind(query, query, offset).all()
+			return result.results
+		}
+
+		const sqlQuery = `
+			SELECT id, name, email, role, created_at 
+			FROM users 
+			WHERE role != 'admin'
+			ORDER BY name ASC
+			LIMIT 10 OFFSET ?
+		`
+		const result = await this.db.prepare(sqlQuery).bind(offset).all()
+		return result.results
+	}
 }

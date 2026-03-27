@@ -4,6 +4,7 @@ import { authRoute } from './http/controllers/auth/routes'
 import { bookRoute } from './http/controllers/book/route'
 import { rentalRoute } from './http/controllers/rentals/route'
 import { adminRoute } from './http/controllers/admin/route'
+import { usersRoute } from './http/controllers/users/route'
 
 const app = createRouter()
 /** ------ ROUTES ------ */
@@ -12,6 +13,7 @@ app.route('/auth', authRoute)
 app.route('/book', bookRoute)
 app.route('/rental', rentalRoute)
 app.route('/admin', adminRoute)
+app.route('/users', usersRoute)
 
 export default {
 	fetch: (request, env, ctx) => app.handle(request, env, ctx),
