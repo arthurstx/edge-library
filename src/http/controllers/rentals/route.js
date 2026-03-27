@@ -6,6 +6,8 @@ import { list } from './list-active-user-rentals.controller'
 import { history } from './list-rentals-history.controller'
 import { updateStatus } from './update-status.controller'
 import { listAll } from './list-all-rentals.controller'
+import { getUserTotalRentals } from './get-user-total-rentals.controller'
+import { getUserActiveRentals } from './get-user-active-rentals.controller'
 
 const rentalRoute = createRouter()
 
@@ -14,5 +16,8 @@ rentalRoute.get('', requireAuth, verifyUserRole, listAll)
 rentalRoute.get('/active', requireAuth, list)
 rentalRoute.get('/history', requireAuth, history)
 rentalRoute.patch('/:id/return', requireAuth, verifyUserRole, updateStatus)
+
+rentalRoute.get('/stats/total', requireAuth, getUserTotalRentals)
+rentalRoute.get('/stats/active', requireAuth, getUserActiveRentals)
 
 export { rentalRoute }

@@ -39,4 +39,24 @@ export class D1UsersRepository {
 		await this.db.prepare(query).bind(id, name, email, password_hash, created_at, role).run()
 		return { id, name, email, password_hash, created_at, role }
 	}
+
+	/**
+	 * @returns {Promise<number>}
+	 */
+	async countNonAdmin() {
+		const query = `SELECT COUNT(*) as total FROM users 
+		WHERE role != 'admin'`
+		const result = await this.db.prepare(query).first()
+		return result ? result.total : 0
+	}
+
+	/**
+	 * @returns {Promise<number>}
+	 */
+	async countWithActiveRentals() {
+		const query = `SELECT COUNT(DISTINCT user_id) as total FROM rentals 
+		WHERE status = 'rented'`
+		const result = await this.db.prepare(query).first()
+		return result ? result.total : 0
+	}
 }

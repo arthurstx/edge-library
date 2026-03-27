@@ -38,4 +38,14 @@ export class InMemoryUsersRepository {
 		const user = this.users.find((user) => user.id === id)
 		return user ? user : null
 	}
+
+	async countNonAdmin() {
+		return this.users.filter((user) => user.role !== 'admin').length
+	}
+
+	async countWithActiveRentals() {
+		// Mock implementation for tests. Tests should use vi.spyOn to mock the return value
+		// since InMemoryUsersRepository does not have access to rentals.
+		return 0
+	}
 }

@@ -19,8 +19,10 @@ test('list all rentals : Integration', async () => {
 		expect.arrayContaining([
 			expect.objectContaining({
 				id: rental.id,
-				userId: user.id,
-				userName: user.name,
+				user: {
+					userId: user.id,
+					name: user.name,
+				},
 			}),
 		]),
 	)
@@ -44,8 +46,10 @@ test('list all rentals with query filter : Integration', async () => {
 	expect(returnedRentals).toEqual(
 		expect.arrayContaining([
 			expect.objectContaining({
-				userId: user.id,
-				userName: user.name,
+				user: {
+					userId: user.id,
+					name: user.name,
+				},
 			}),
 		]),
 	)

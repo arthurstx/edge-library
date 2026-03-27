@@ -88,4 +88,35 @@ export class D1RentalsRepository {
 		WHERE user_id = ? AND id = ?`
 		return await this.database.prepare(query).bind(userId, id).run()
 	}
+
+	/**
+	 * @returns {Promise<number>}
+	 */
+	async countActive() {
+		const query = `SELECT COUNT(*) as total FROM rentals 
+		WHERE status = 'rented'`
+		const result = await this.database.prepare(query).first()
+		return result ? result.total : 0
+	}
+
+	/**
+	 * @param {{ userId: string }} params
+	 * @returns {Promise<number>}
+	 */
+	async countByUserId({ userId }) {
+		const query = 'SELECT COUNT(*) as total FROM rentals WHERE user_id = ?'
+		const result = await this.database.prepare(query).bind(userId).first()
+		return result ? result.total : 0
+	}
+
+	/**
+	 * @param {{ userId: string }} params
+	 * @returns {Promise<number>}
+	 */
+	async countActiveByUserId({ userId }) {
+		const query = `SELECT COUNT(*) as total FROM rentals 
+		WHERE user_id = ? AND status = 'rented'`
+		const result = await this.database.prepare(query).bind(userId).first()
+		return result ? result.total : 0
+	}
 }

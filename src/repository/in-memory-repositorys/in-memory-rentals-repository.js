@@ -83,4 +83,16 @@ export class InMemoryRentalsRepository {
 
 		return { meta: { changed_db: true } }
 	}
+
+	async countActive() {
+		return this.rentals.filter((rental) => rental.status === 'rented').length
+	}
+
+	async countByUserId({ userId }) {
+		return this.rentals.filter((rental) => rental.userId === userId).length
+	}
+
+	async countActiveByUserId({ userId }) {
+		return this.rentals.filter((rental) => rental.userId === userId && rental.status === 'rented').length
+	}
 }
