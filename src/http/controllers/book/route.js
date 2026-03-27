@@ -7,6 +7,7 @@ import { update } from './update-book.controller'
 import { findBook } from './find-book.controller'
 import { search } from './search-book.controller'
 import { list } from './list-books.controller'
+import { deleteBook } from './delete.controller'
 
 const bookRoute = createRouter()
 
@@ -16,5 +17,6 @@ bookRoute.patch('/update/:id', requireAuth, verifyUserRole, update)
 bookRoute.get('/find/:id', findBook)
 bookRoute.get('/search', search)
 bookRoute.get('/list', list)
+bookRoute.delete('/:id', requireAuth, verifyUserRole, deleteBook)
 
 export { bookRoute }

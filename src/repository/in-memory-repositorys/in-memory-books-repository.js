@@ -86,4 +86,8 @@ export class InMemoryBooksRepository {
 
 		return data
 	}
+
+	async delete(id) {
+		this.books = this.books.filter((book) => book.id !== id)
+	}
 }

@@ -115,4 +115,12 @@ export class D1BooksRepository {
 			.bind((page - 1) * 10)
 			.all()
 	}
+
+	/**
+	 * @param {string} id
+	 * @returns {Promise<void>}
+	 */
+	async delete(id) {
+		await this.database.prepare('DELETE FROM books WHERE id = ?').bind(id).run()
+	}
 }

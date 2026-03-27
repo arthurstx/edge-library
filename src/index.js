@@ -11,7 +11,6 @@ app.get('/health', () => jsonResponse({ status: 'ok' }))
 app.route('/auth', authRoute)
 app.route('/book', bookRoute)
 app.route('/rental', rentalRoute)
-app.route('/rentals', rentalRoute)
 app.route('/admin', adminRoute)
 
 export default {
