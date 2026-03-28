@@ -5,6 +5,6 @@ import { list } from './list.controller'
 
 const usersRoute = createRouter()
 
-usersRoute.get('/', requireAuth, verifyUserRole, list)
+usersRoute.get('', requireAuth, verifyUserRole, list)
 
 export { usersRoute }
