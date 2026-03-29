@@ -73,13 +73,23 @@ export class InMemoryRentalsRepository {
 	}
 
 	async updateStatus({ userId, id }) {
-		const rentalIndex = this.rentals.findIndex((rental) => rental.userId === userId && rental.id === id)
+		const rentalIndex = this.rentals.findIndex(
+			(rental) => rental.userId === userId && rental.id === id && rental.status === 'rented',
+		)
 
 		if (rentalIndex === -1) {
 			return { meta: { changed_db: false } }
 		}
 
 		this.rentals[rentalIndex].status = 'returned'
+
+		if (this.booksRepository) {
+			const bookId = this.rentals[rentalIndex].bookId
+			const bookIndex = this.booksRepository.books.findIndex((book) => book.id === bookId)
+			if (bookIndex !== -1) {
+				this.booksRepository.books[bookIndex].stock += 1
+			}
+		}
 
 		return { meta: { changed_db: true } }
 	}

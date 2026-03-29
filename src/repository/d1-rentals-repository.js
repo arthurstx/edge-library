@@ -84,9 +84,19 @@ export class D1RentalsRepository {
 	}
 
 	async updateStatus({ userId, id }) {
-		const query = `UPDATE rentals SET status = 'returned' 
-		WHERE user_id = ? AND id = ?`
-		return await this.database.prepare(query).bind(userId, id).run()
+		const updateStockQuery = `
+			UPDATE books 
+			SET stock = stock + 1 
+			WHERE id = (SELECT book_id FROM rentals WHERE user_id = ? AND id = ? AND status = 'rented')
+		`
+		const updateRentalQuery = `
+			UPDATE rentals SET status = 'returned' 
+			WHERE user_id = ? AND id = ? AND status = 'rented'
+		`
+		const statements = [this.database.prepare(updateStockQuery).bind(userId, id), this.database.prepare(updateRentalQuery).bind(userId, id)]
+
+		const results = await this.database.batch(statements)
+		return results[1]
 	}
 
 	/**
